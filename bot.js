@@ -9,12 +9,10 @@ logger.add(logger.transports.Console, {
 logger.level = 'debug';
 // Initialize Discord Bot
 var bot = new Discord.Client({
-   token: "NDQ5MTE0NjUxMjY3OTU2NzM2.DegNAA.qdaY7zTxJDT4n4JWBw03d_nueh4",
+   token: process.enc.BOT_TOKEN,
    autorun: true
 });
-console.log("Test1");
 bot.on('ready', function (evt) {
-    console.log("Test2");
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
@@ -39,5 +37,3 @@ bot.on('message', function (user, userID, channelID, message, evt) {
          }
      }
 });
-
-
