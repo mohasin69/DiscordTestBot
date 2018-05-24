@@ -211,11 +211,13 @@ function getTournamentList(channelID)
     
         request('https://api.challonge.com/v1/tournaments.json?api_key='+process.env.API_TOKEN+'&state=all', { json: true }, (err, res, response) => {
         if (err) { return console.log(err); }
-        
+        if(response.count)
+        {
             response.forEach(element => {
                 sendMessages(channelID, [element.tournament.url]);
             });
-        
+        }
+        else     sendMessages(channelID, ["No tournaments found..."]);
         });
 
 
@@ -236,7 +238,7 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
                 sendMessages(channelID, [element.participant.name]);
             });
         }   
-        else     sendMessages(channelID, ["No participants"]);
+        else     sendMessages(channelID, ["No participants found..."]);
         });
 }
 
