@@ -21,50 +21,57 @@
 
 
 
-const Discord = require('discord.js');
+// const Discord = require('discord.io');
 
-var options = {
-    host: 'https://api.challonge.com/v1/tournaments.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY&state=all'
-};
+// var options = {
+//     host: 'https://api.challonge.com/v1/tournaments.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY&state=all'
+// };
 
-const request = require('request');
+// const request = require('request');
  
-function loadtest(message)
-{
-    request('https://api.challonge.com/v1/tournaments.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY&state=all', { json: true }, (err, res, response) => {
-    if (err) { return console.log(err); }
+// function loadtest(message)
+// {
+//     request('https://api.challonge.com/v1/tournaments.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY&state=all', { json: true }, (err, res, response) => {
+//     if (err) { return console.log(err); }
     
-        response.forEach(element => {
-            message.reply(element.tournament.url);
-        });
+//         response.forEach(element => {
+//             message.reply(element.tournament.url);
+//         });
     
-    });
-}
+//     });
+// }
 
-const bot = new Discord.Client();
+var tokenString = "NDQ5MTE0NjUxMjY3OTU2NzM2.DegNAA.qdaY7zTxJDT4n4JWBw03d_nueh4";
 
-bot.on('message', (message) => {
-    console.log(message.content);
-   if (message.content.substring(0, 1) == '!') {
-        var args = message.content.substring(1).split(' ');
-        var cmd = args[0];
+// //const bot = new Discord.Client();
+// var bot = new Discord.Client({
+//     token: tokenString,
+//     autorun: true
+// });
+
+
+// bot.on('message', (message) => {
+//     console.log(message.content);
+//    if (message.content.substring(0, 1) == '!') {
+//         var args = message.content.substring(1).split(' ');
+//         var cmd = args[0];
        
-        args = args.splice(1);
-        switch(cmd) {
-            // !ping
-            case 'ping':
-            loadtest(message);
-                message.reply('<html><h1>TEST</h1></html>');
-            break;
-            // Just add any case commands if you want to..
-         }
-     }
+//         args = args.splice(1);
+//         switch(cmd) {
+//             // !ping
+//             case 'ping':
+//             loadtest(message);
+//                 message.reply('<html><h1>TEST</h1></html>');
+//             break;
+//             // Just add any case commands if you want to..
+//          }
+//      }
     
-});
+// });
 
-var token = "NDQ5MTE0NjUxMjY3OTU2NzM2.DegNAA.qdaY7zTxJDT4n4JWBw03d_nueh4";
 
-bot.login(token);
+// console.log("Connecting...");
+//bot.login(token);
 
 
 
@@ -117,3 +124,92 @@ bot.login(token);
 // });
 
 // bot.login;
+
+
+
+
+/*Variable area*/
+var Discord = require('discord.io');
+var bot = new Discord.Client({
+	token: "NDQ5MTE0NjUxMjY3OTU2NzM2.DegNAA.qdaY7zTxJDT4n4JWBw03d_nueh4",
+	autorun: true
+});
+
+/*Event area*/
+bot.connect();
+bot.on("ready", function(event) {
+	console.log("Connected!");
+	console.log("Logged in as: ");
+	console.log(bot.username + " - (" + bot.id + ")");
+});
+
+bot.on("message", function(user, userID, channelID, message, event) {
+	console.log(user + " - " + userID);
+	console.log("in " + channelID);
+	console.log(message);
+	console.log("----------");
+
+	if (message === "ping") {
+		sendMessages(channelID, ["Pong"]); //Sending a message with our helper function
+	} else if (message === "picture") {
+		sendFiles(channelID, ["fillsquare.png"]); //Sending a file with our helper function
+	}
+});
+
+bot.on("presence", function(user, userID, status, game, event) {
+	/*console.log(user + " is now: " + status);*/
+});
+
+bot.on("any", function(event) {
+	/*console.log(rawEvent)*/ //Logs every event
+});
+
+bot.on("disconnect", function(erMsg, code) {
+    console.log('----- Bot disconnected from Discord with code', code, 'for reason:', erMsg, '-----');
+	bot.connect(); //Auto reconnect
+});
+
+/*Function declaration area*/
+function sendMessages(ID, messageArr, interval) {
+	var resArr = [], len = messageArr.length;
+	var callback = typeof(arguments[2]) === 'function' ?  arguments[2] :  arguments[3];
+	if (typeof(interval) !== 'number') interval = 1000;
+
+	function _sendMessages() {
+		setTimeout(function() {
+			if (messageArr[0]) {
+				bot.sendMessage({
+					to: ID,
+					message: messageArr.shift()
+				}, function(err, res) {
+					resArr.push(err || res);
+					if (resArr.length === len) if (typeof(callback) === 'function') callback(resArr);
+				});
+				_sendMessages();
+			}
+		}, interval);
+	}
+	_sendMessages();
+}
+
+function sendFiles(channelID, fileArr, interval) {
+	var resArr = [], len = fileArr.length;
+	var callback = typeof(arguments[2]) === 'function' ? arguments[2] : arguments[3];
+	if (typeof(interval) !== 'number') interval = 1000;
+
+	function _sendFiles() {
+		setTimeout(function() {
+			if (fileArr[0]) {
+				bot.uploadFile({
+					to: channelID,
+					file: fileArr.shift()
+				}, function(err, res) {
+					resArr.push(err || res);
+					if (resArr.length === len) if (typeof(callback) === 'function') callback(resArr);
+				});
+				_sendFiles();
+			}
+		}, interval);
+	}
+	_sendFiles();
+}
