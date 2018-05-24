@@ -178,7 +178,7 @@ bot.on("any", function(event) {
 
 bot.on("disconnect", function(erMsg, code) {
     console.log('----- Bot disconnected from Discord with code', code, 'for reason:', erMsg, '-----');
-	//bot.connect(); //Auto reconnect
+	bot.connect(); //Auto reconnect
 });
 
 /*Function declaration area*/
