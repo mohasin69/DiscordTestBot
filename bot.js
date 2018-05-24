@@ -149,11 +149,24 @@ bot.on("message", function(user, userID, channelID, message, event) {
 	console.log(message);
 	console.log("----------");
 
-	if (message === "ping") {
-		sendMessages(channelID, ["Pong"]); //Sending a message with our helper function
-	} else if (message === "picture") {
-		sendFiles(channelID, ["fillsquare.png"]); //Sending a file with our helper function
-	}
+    if (message.substring(0, 1) == '!') {
+
+        var args = message.substring(1).split(' ');
+            var cmd = args[0];
+           
+
+        switch(cmd)
+        {
+            case "ping" : 
+                            sendMessages(channelID, ["Pong"]); break;
+            case "tournament" :
+                            getTournamentList(channelID); break;
+            case "participant" : 
+                            getParticipantList(channelID); break;
+            default:
+                            sendMessages(channelID,["I am still learning pilot!!!"]); break;
+        }
+    }
 });
 
 bot.on("presence", function(user, userID, status, game, event) {
@@ -190,6 +203,42 @@ function sendMessages(ID, messageArr, interval) {
 		}, interval);
 	}
 	_sendMessages();
+}
+
+function getTournamentList(channelID)
+{
+
+    const request = require('request');
+    
+        request('https://api.challonge.com/v1/tournaments.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY&state=all', { json: true }, (err, res, response) => {
+        if (err) { return console.log(err); }
+        
+            response.forEach(element => {
+                sendMessages(channelID, [element.tournament.url]);
+            });
+        
+        });
+
+
+}
+
+
+function getParticipantList(channelID, tournamentID ="EliteGunz1")
+{
+
+    const request = require('request');
+    
+        request('https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY', (err, res, response) => {
+        if (err) { return console.log(err); }
+            console.log(response);
+        if(response.count)
+        {
+            response.forEach(element => {
+                sendMessages(channelID, [element.participant.name]);
+            });
+        }   
+        else     sendMessages(channelID, ["No participants"]);
+        });
 }
 
 function sendFiles(channelID, fileArr, interval) {
