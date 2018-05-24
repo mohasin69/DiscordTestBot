@@ -258,7 +258,7 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
 	}
 	var participantList = new Array();
 	
-	if(0 < response.length && typeof response[0].participant != "umdefined")
+	if(0 < response.length && typeof element[0].participant.name != "umdefined")
 	{
 		response.forEach(element => {
 			participantList.push(element.participant.name);
