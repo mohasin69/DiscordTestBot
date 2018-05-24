@@ -136,7 +136,6 @@ var bot = new Discord.Client({
 });
 
 /*Event area*/
-bot.connect();
 bot.on("ready", function(event) {
 	console.log("Connected!");
 	console.log("Logged in as: ");
