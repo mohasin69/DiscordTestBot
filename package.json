@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "My own Discord bot",
   "main": "bot.js",
-  "author": "YOUR-NAME-HERE",
-  "scripts":{
-    "start": "node bot.js"  
-  },
+  "author": "Sharp",
+  
   "dependencies": {
-    "discord.js": "^11.1.0",
+     "discord.io": "^2.5.3",
     "winston": "^2.4.2",
     "request":"2.81.0"
   }
