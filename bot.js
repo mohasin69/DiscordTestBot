@@ -136,7 +136,6 @@ var bot = new Discord.Client({
 });
 
 /*Event area*/
-bot.connect();
 bot.on("ready", function(event) {
 	console.log("Connected!");
 	console.log("Logged in as: ");
@@ -179,7 +178,7 @@ bot.on("any", function(event) {
 
 bot.on("disconnect", function(erMsg, code) {
     console.log('----- Bot disconnected from Discord with code', code, 'for reason:', erMsg, '-----');
-	//bot.connect(); //Auto reconnect
+	bot.connect(); //Auto reconnect
 });
 
 /*Function declaration area*/
