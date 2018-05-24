@@ -131,7 +131,7 @@ var tokenString = "NDQ5MTE0NjUxMjY3OTU2NzM2.DegNAA.qdaY7zTxJDT4n4JWBw03d_nueh4";
 /*Variable area*/
 var Discord = require('discord.io');
 var bot = new Discord.Client({
-	token: "NDQ5MTE0NjUxMjY3OTU2NzM2.DegNAA.qdaY7zTxJDT4n4JWBw03d_nueh4",
+	token: process.env.BOT_TOKEN,
 	autorun: true
 });
 
@@ -210,7 +210,7 @@ function getTournamentList(channelID)
 
     const request = require('request');
     
-        request('https://api.challonge.com/v1/tournaments.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY&state=all', { json: true }, (err, res, response) => {
+        request('https://api.challonge.com/v1/tournaments.json?api_key='+process.env.API_TOKEN+'&state=all', { json: true }, (err, res, response) => {
         if (err) { return console.log(err); }
         
             response.forEach(element => {
@@ -228,7 +228,7 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
 
     const request = require('request');
     
-        request('https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY', (err, res, response) => {
+        request('https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=' +  process.env.API_TOKEN, (err, res, response) => {
         if (err) { return console.log(err); }
             console.log(response);
         if(response.count)
