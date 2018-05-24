@@ -223,6 +223,9 @@ function getTournamentList(channelID)
 		return console.log(err); 
 	}
 	var tournamentList = new Array();
+	if(process.env.DEBUG)
+		console.log("response.length" + response.length);
+
 	if(0 < response.length)
 	{
 		response.forEach(element => {
@@ -254,6 +257,8 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
 		return console.log(err); 
 	}
 	var participantList = new Array();
+	if(process.env.DEBUG)
+		console.log("response.length" + response.length);
 	if(0 < response.length)
 	{
 		response.forEach(element => {
