@@ -224,10 +224,12 @@ function getTournamentList(channelID)
 		});
 	}
 	else     tournamentList.push("No tournaments found...");
-	});
 
 	sendMessages(channelID, tournamentList);
 
+	});
+
+	
 }
 
 
@@ -251,9 +253,11 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
 		});
 	}   
 	else     participantList.push("No participants found...");
+
+	sendMessages(channelID, participantList);
 	});
 	
-	sendMessages(channelID, participantList);
+	
 }
 
 function sendFiles(channelID, fileArr, interval) {
