@@ -211,18 +211,22 @@ function getTournamentList(channelID)
 
     const request = require('request');
 	var CHALLONGE_URL =   'https://api.challonge.com/v1/tournaments.json?api_key=' + process.env.API_TOKEN+'&state=all';
-	console.log(CHALLONGE_URL);
 	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
-	if (err) { return console.log(err); }
-	if(response.count)
+	if (err) 
+	{ 
+		return console.log(err); 
+	}
+	var tournamentList = new Array();
+	if(0 < response.length)
 	{
 		response.forEach(element => {
-			sendMessages(channelID, [element.tournament.url]);
+			tournamentList.push(element.tournament.url);
 		});
 	}
-	else     sendMessages(channelID, ["No tournaments found..."]);
+	else     tournamentList.push("No tournaments found...");
 	});
 
+	sendMessages(channelID, tournamentList);
 
 }
 
@@ -233,24 +237,29 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
     const request = require('request');
 	
 	var CHALLONGE_URL =   'https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=' +  process.env.API_TOKEN;
-	console.log(CHALLONGE_URL);
-        request(CHALLONGE_URL, (err, res, response) => {
-        if (err) { return console.log(err); }
-            console.log(response);
-        if(response.count)
-        {
-            response.forEach(element => {
-                sendMessages(channelID, [element.participant.name]);
-            });
-        }   
-        else     sendMessages(channelID, ["No participants found..."]);
-        });
+	request(CHALLONGE_URL, (err, res, response) => {
+	if (err) 
+	{ 
+		return console.log(err); 
+	}
+	var participantList = new Array();
+	if(0< response.length)
+	{
+		response.forEach(element => {
+			participantList.push(element.participant.name);
+			
+		});
+	}   
+	else     participantList.push("No participants found...");
+	});
+	
+	sendMessages(channelID, participantList);
 }
 
 function sendFiles(channelID, fileArr, interval) {
 	var resArr = [], len = fileArr.length;
 	var callback = typeof(arguments[2]) === 'function' ? arguments[2] : arguments[3];
-	if (typeof(interval) !== 'number') interval = 1000;
+	if (typeof(interval) !== 'number') interval = 500;
 
 	function _sendFiles() {
 		setTimeout(function() {
