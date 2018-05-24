@@ -134,9 +134,9 @@ var bot = new Discord.Client({
 	token: process.env.BOT_TOKEN,
 	autorun: true
 });
-var test1 = "aaaaaaaaaaaa";
-var test = "asdf" + test1;
-console.log(test);
+
+
+
 /*Event area*/
 bot.on("ready", function(event) {
 	console.log("Connected!");
@@ -145,8 +145,12 @@ bot.on("ready", function(event) {
 });
 
 bot.on("message", function(user, userID, channelID, message, event) {
-	console.log(user + " - " + userID);
-	console.log("in " + channelID);
+	
+	if(process.env.DEBUG)
+	{
+		console.log(user + " - " + userID);
+		console.log("in " + channelID);
+	}
 	console.log(message);
 	console.log("----------");
 
@@ -211,6 +215,8 @@ function getTournamentList(channelID)
 
     const request = require('request');
 	var CHALLONGE_URL =   'https://api.challonge.com/v1/tournaments.json?api_key=' + process.env.API_TOKEN+'&state=all';
+	if(process.env.DEBUG)
+		console.log(CHALLONGE_URL);
 	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
 	if (err) 
 	{ 
@@ -239,13 +245,16 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
     const request = require('request');
 	
 	var CHALLONGE_URL =   'https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=' +  process.env.API_TOKEN;
+
+	if(process.env.DEBUG)
+		console.log(CHALLONGE_URL);
 	request(CHALLONGE_URL, (err, res, response) => {
 	if (err) 
 	{ 
 		return console.log(err); 
 	}
 	var participantList = new Array();
-	if(0< response.length)
+	if(0 < response.length)
 	{
 		response.forEach(element => {
 			participantList.push(element.participant.name);
