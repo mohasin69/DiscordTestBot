@@ -134,7 +134,9 @@ var bot = new Discord.Client({
 	token: process.env.BOT_TOKEN,
 	autorun: true
 });
-
+var test1 = "aaaaaaaaaaaa";
+var test = "asdf" + test1;
+console.log(test);
 /*Event area*/
 bot.on("ready", function(event) {
 	console.log("Connected!");
@@ -208,17 +210,18 @@ function getTournamentList(channelID)
 {
 
     const request = require('request');
-    
-        request('https://api.challonge.com/v1/tournaments.json?api_key='+process.env.API_TOKEN+'&state=all', { json: true }, (err, res, response) => {
-        if (err) { return console.log(err); }
-        if(response.count)
-        {
-            response.forEach(element => {
-                sendMessages(channelID, [element.tournament.url]);
-            });
-        }
-        else     sendMessages(channelID, ["No tournaments found..."]);
-        });
+	var CHALLONGE_URL =   'https://api.challonge.com/v1/tournaments.json?api_key=' + process.env.API_TOKEN+'&state=all';
+	console.log(CHALLONGE_URL);
+	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
+	if (err) { return console.log(err); }
+	if(response.count)
+	{
+		response.forEach(element => {
+			sendMessages(channelID, [element.tournament.url]);
+		});
+	}
+	else     sendMessages(channelID, ["No tournaments found..."]);
+	});
 
 
 }
@@ -228,8 +231,10 @@ function getParticipantList(channelID, tournamentID ="EliteGunz1")
 {
 
     const request = require('request');
-    
-        request('https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=' +  process.env.API_TOKEN, (err, res, response) => {
+	
+	var CHALLONGE_URL =   'https://api.challonge.com/v1/tournaments/'+tournamentID +'/participants.json?api_key=' +  process.env.API_TOKEN;
+	console.log(CHALLONGE_URL);
+        request(CHALLONGE_URL, (err, res, response) => {
         if (err) { return console.log(err); }
             console.log(response);
         if(response.count)
