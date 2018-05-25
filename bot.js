@@ -6,9 +6,9 @@
 // Constant variables
 //
 
-const API_TOKEN = "mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY"; //process.env.API_TOKEN
-const BOT_TOKEN = "NDQ5MzMyODc5MTIyNzU5Njkx.DejJYQ.ulATCbUrgmyoocE0Vbr7_dxz0SM"; //process.env.BOT_TOKEN
-const DEBUG = 1; // process.env.DEBUG
+const API_TOKEN = process.env.API_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const DEBUG = process.env.DEBUG;
 
 
 /*Variable area*/
