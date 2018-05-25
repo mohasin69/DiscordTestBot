@@ -44,11 +44,13 @@ bot.on("message", function (user, userID, channelID, message, event) {
 		console.log(user + " - " + userID);
 		console.log("in " + channelID);
 	}
-	console.log(message);
-	console.log("----------");
+	
 
 	if (message.substring(0, 1) == prefix) {
-
+		if (1 == DEBUG) {
+			console.log(message);
+			console.log("----------");
+		}
 		const args = message.slice(prefix.length).trim().split(/ +/g);
 		const command = args.shift().toLowerCase();
 
