@@ -87,7 +87,9 @@ bot.on("disconnect", function (erMsg, code) {
 function sendMessage(ID, messageArr, interval) {
 
 	var resArr = [], len = messageArr.length;
-	console.log("messageArr.length;" + messageArr.length);
+	if (1 == DEBUG) {
+		console.log("messageArr.length;" + messageArr.length);
+	}
 	var callback = typeof (arguments[2]) === 'function' ? arguments[2] : arguments[3];
 	if (typeof (interval) !== 'number') interval = 500;
 
