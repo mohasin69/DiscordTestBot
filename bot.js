@@ -5,14 +5,25 @@
 //
 // Constant variables
 //
+/*Variable area*/
+var Discord = require('discord.io');
+
 
 const API_TOKEN = process.env.API_TOKEN;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
+const PORT = process.env.PORT;
+const Hapi = require('hapi');
 
+const server = new Hapi.Server({ port: PORT || 3000 });
 
-/*Variable area*/
-var Discord = require('discord.io');
+server.start((err) => {
+
+    if (err) {
+        throw err;
+    }
+    console.log(`Server running at: ${server.info.uri}`);
+});
 
 var bot = new Discord.Client({
 	token: BOT_TOKEN,
