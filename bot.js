@@ -40,7 +40,7 @@ bot.on("ready", function (event) {
 });
 bot.on("message", function (user, userID, channelID, message, event) {
 
-	if (DEBUG) {
+	if (1 == DEBUG) {
 		console.log(user + " - " + userID);
 		console.log("in " + channelID);
 	}
@@ -130,7 +130,7 @@ function getTournamentList(channelID) {
 
 	const request = require('request');
 	var CHALLONGE_URL = 'https://api.challonge.com/v1/tournaments.json?api_key=' + API_TOKEN + '&state=all';
-	if (DEBUG)
+	if (1 == DEBUG)
 	{
 		console.log(CHALLONGE_URL);
 	}
@@ -139,7 +139,7 @@ function getTournamentList(channelID) {
 			return console.log(err);
 		}
 		var tournamentList = new Array();
-		if (DEBUG)
+		if (1 == DEBUG)
 			console.log("response.length" + response.length);
 
 
@@ -171,7 +171,7 @@ function getParticipantList(channelID, tournamentID = "elitegunztournament") {
 
 	var CHALLONGE_URL = 'https://api.challonge.com/v1/tournaments/' + tournamentID + '/participants.json?api_key=' + API_TOKEN;
 
-	if (DEBUG) {
+	if (1 == DEBUG) {
 		console.log(CHALLONGE_URL);
 		console.log("Parameters tournamentID - " + tournamentID);
 	}
