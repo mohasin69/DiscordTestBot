@@ -27,7 +27,6 @@ bot.on("ready", function (event) {
 	console.log("Logged in as: ");
 	console.log(bot.username + " - (" + bot.id + ")");
 });
-bot.connect();
 bot.on("message", function (user, userID, channelID, message, event) {
 
 	if (DEBUG) {
