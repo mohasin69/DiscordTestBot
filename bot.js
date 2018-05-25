@@ -15,7 +15,7 @@ const DEBUG = process.env.DEBUG;
 const PORT = process.env.PORT;
 const Hapi = require('hapi');
 
-const server = new Hapi.Server({ port: PORT, host: 'localhost' });
+const server = new Hapi.Server({ port: PORT || 3000 });
 
 server.start((err) => {
 
