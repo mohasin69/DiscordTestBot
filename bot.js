@@ -9,13 +9,18 @@
 var Discord = require('discord.io');
 
 
-const API_TOKEN = process.env.API_TOKEN;
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const DEBUG = process.env.DEBUG;
-const PORT = process.env.PORT;
+const API_TOKEN = process.env.API_TOKEN;;//"mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY";
+const BOT_TOKEN = process.env.BOT_TOKEN;//"NDQ5MzMyODc5MTIyNzU5Njkx.DejJYQ.ulATCbUrgmyoocE0Vbr7_dxz0SM";//
+const DEBUG = process.env.DEBUG;//1;
+const PORT = process.env.PORT;//65644;
 const Hapi = require('hapi');
+var tournamentID = "elitegunztournament";//"jstestbot1";;
 
 const server = new Hapi.Server({ port: PORT || 3000 });
+
+var participantList = [];
+
+const API = require("./internal/EGPilot.js");
 
 server.start((err) => {
 
@@ -58,12 +63,25 @@ bot.on("message", function (user, userID, channelID, message, event) {
 			case "ping":
 				sendMessages(channelID, ["Pong"]); break;
 			case "tournament":
-				getTournamentList(channelID); break;
+				API.getTournamentList(channelID, function(reply){
+					sendMessage(channelID, reply);
+				}); break;
 			case "participant":
-				//var tournamentID = args.shift().toLowerCase();
-				getParticipantList(channelID); break;
+				if( args.length > 0 )
+					tournamentID = args.shift().toLowerCase();
+				API.getParticipantList(channelID, tournamentID, true, function(reply){
+					sendMessage(channelID, reply);
+				}); break;
+            
+			case "matches":
+				if( args.length > 0 )
+				{
+					tournamentID = args.shift().toLowerCase();
+				}
+				getMatches(channelID, tournamentID); break;
 			case "admin_disconnect":
 				bot.disconnect();
+				break;
 			default:
 				sendMessages(channelID, ["I am still learning pilot!!!"]); break;
 		}
@@ -130,76 +148,7 @@ function sendMessages(ID, messageArr, interval) {
 	_sendMessages();
 }
 
-function getTournamentList(channelID) {
 
-	const request = require('request');
-	var CHALLONGE_URL = 'https://api.challonge.com/v1/tournaments.json?api_key=' + API_TOKEN + '&state=all';
-	if (1 == DEBUG)
-	{
-		console.log(CHALLONGE_URL);
-	}
-	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
-		if (err) {
-			return console.log(err);
-		}
-		var tournamentList = new Array();
-		if (1 == DEBUG)
-			console.log("response.length" + response.length);
-
-
-		tournamentList.push("```");
-
-
-		var reply = "**TournamentList** 	```";
-		if (0 < response.length && typeof response[0].tournament != undefined) {
-			response.forEach(function (element, index) {
-				reply = reply + "\n" + (index + 1) + ". " + element.tournament.url;
-			});
-		}
-		else {
-			reply = reply + "\n" + "No tournaments found...";
-		}
-		reply = reply + "```";
-
-		//
-		// Send the messages
-		//
-		sendMessage(channelID, reply);
-
-	});
-}
-
-function getParticipantList(channelID, tournamentID = "elitegunztournament") {
-
-	const request = require('request');
-
-	var CHALLONGE_URL = 'https://api.challonge.com/v1/tournaments/' + tournamentID + '/participants.json?api_key=' + API_TOKEN;
-
-	if (1 == DEBUG) {
-		console.log(CHALLONGE_URL);
-		console.log("Parameters tournamentID - " + tournamentID);
-	}
-	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
-		if (err) {
-			return console.log(err);
-		}
-		var participantList = new Array();
-		
-		var reply = "**Participant List in " + tournamentID.toUpperCase() + "** 	```";
-		if (0 < response.length && typeof response[0].participant != undefined) {
-			response.forEach(function (element, index) {
-				reply = reply + "\n" + (index + 1) + ". " + element.participant.display_name;
-			});
-		}
-		else {
-			reply = reply + "\n" + "No Participants found...";
-		}
-		reply = reply + "```";
-		sendMessage(channelID, reply);
-	});
-
-
-}
 
 function sendFiles(channelID, fileArr, interval) {
 	var resArr = [], len = fileArr.length;
@@ -221,4 +170,122 @@ function sendFiles(channelID, fileArr, interval) {
 		}, interval);
 	}
 	_sendFiles();
+}
+
+
+
+
+    
+function getMatches(channelID, tournamentID, roundID = 1 )
+{
+	const request = require('request');
+	var CHALLONGE_URL = 'https://api.challonge.com/v1/tournaments/' + tournamentID + '/matches.json?api_key=' + API_TOKEN;
+	if (1 == DEBUG)
+	{
+		console.log(CHALLONGE_URL);
+	}
+	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
+		if (err) {
+			return console.log(err);
+		}
+		var tournamentList = new Array();
+		if (1 == DEBUG)
+			console.log("response.length" + response.length);
+
+		var playersList = [];
+		//participantList.splice(0,participantList.length);
+		
+		API.getParticipantList(channelID, tournamentID, false, function(playersList){
+			
+
+			// console.log("PLAYERS LIST");
+			// for( id in playersList)
+			// {
+			// 	console.log("\n key -" + id +" value - "+ playersList[id].display_name);
+			// };
+
+			var matchesList = { "0": []};
+
+			//var testist = require("./test.json");
+
+			var reply = "**Bracktes** ";
+
+			if (0 < response.length && typeof response[0].match != undefined) {
+				response.forEach(function (element, index) {
+					if( !('"'+ element.match.round +'"' in matchesList) )
+						matchesList['"'+ element.match.round +'"'] = new Array();
+					if( element.match.state != "complete" )
+						matchesList['"'+ element.match.round +'"'].push(element.match);
+				});
+			}
+			else {
+				reply = reply + "\n" + "No matches scheduled. Tournament might have not started yet...";
+				sendMessage(channelID, reply);
+				return;
+			}
+
+			if (1 == DEBUG)
+			{
+				for( roundID in matchesList )
+				{
+					if( matchesList[roundID].length > 0 )
+					{
+						console.log("ROUND ID : "+ roundID);
+						matchesList[roundID].forEach(function(value, key){
+							console.log("KEY :: " + key + "\n PALYER ID " + value.player1_id + " and " + value.player2_id);
+							//console.log( playersList['"'+value.player1_id+'"'].display_name + " VS " + playersList['"'+value.player2_id+'"'].display_name);
+						});
+					}
+				}
+			}
+			for( roundID in matchesList )
+			{
+				if( matchesList[roundID].length > 0 )
+				{
+					reply = reply+"\n\n"+ "Round "+roundID+" 	``` ";
+				}
+				else
+					continue;
+				var matchCounter = 1;
+				matchesList[roundID].forEach(function(match,matchID)
+				{
+					if(1 == DEBUG )
+					{
+						console.log("Player 1 : " + match.player1_id + " Player 2 : " + match.player2_id);
+						console.log(playersList["'"+match.player1_id+"'"] + "  vs " + playersList["'"+match.player2_id+"'"] );
+					}
+					if( match.player1_id != undefined || match.player2_id != undefined)
+					{
+						reply = reply + "\n" + (matchCounter++) + ".\tMatch between  \t: \t";
+						if( !(('"'+match.player1_id+'"') in playersList) )
+						{
+							reply = reply + "NA";
+						}
+						else
+							reply = reply + playersList['"'+match.player1_id+'"'].display_name;
+							reply = reply + "\tV/S\t";
+						if( !(('"'+match.player2_id+'"') in playersList) )
+						{
+							reply = reply + " <--->";
+						}
+						else
+							reply = reply + playersList['"'+match.player2_id+'"'].display_name;
+
+						reply = reply + " \n  \tScheduled time \t: \t"+ (match.scheduled_time == null ? "NA" : match.scheduled_time) + "";
+						reply = reply + " \n  \tState \t\t\t: \t"+ match.state +"";
+					}
+				});
+				if( matchesList[roundID].length > 0 )
+					reply = reply + "```";
+				matchCounter = 1;
+			}
+			
+
+			//
+			// Send the messages
+			//
+			sendMessage(channelID, reply);
+		});
+		
+	});
 }
