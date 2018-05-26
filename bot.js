@@ -241,7 +241,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 			for( roundID in matchesList )
 			{
 				
-				if( matchesList[roundID].length > 0 && (matchesList[roundID].match.player1_id != undefined || matchesList[roundID].match.player2_id != undefined))
+				if( matchesList[roundID].length > 0 && ( (player1_id in matchesList[roundID].match ) || ( player2_id in matchesList[roundID].match ) ))
 				{
 					if(1 == DEBUG )
 					{
