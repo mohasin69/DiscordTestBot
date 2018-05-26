@@ -210,9 +210,6 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 
 			var reply = "**Bracktes** ";
 
-
-
-
 			if (0 < response.length && typeof response[0].match != undefined) {
 				response.forEach(function (element, index) {
 					if( !('"'+ element.match.round +'"' in matchesList) )
@@ -260,8 +257,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 						console.log("Player 1 : " + match.player1_id + " Player 2 : " + match.player2_id);
 						console.log(playersList["'"+match.player1_id+"'"] + "  vs " + playersList["'"+match.player2_id+"'"] );
 					}
-					if( playersList['"'+match.player1_id+'"'] != undefined && playersList['"'+match.player1_id+'"'].display_name != undefined)
-					{
+				
 						reply = reply + "\n" + (matchCounter++) + ".\tMatch between  \t: \t";
 						if( !(('"'+match.player1_id+'"') in playersList) )
 						{
@@ -279,7 +275,6 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 
 						reply = reply + " \n  \tScheduled time \t: \t"+ (match.scheduled_time == null ? "NA" : match.scheduled_time) + "";
 						reply = reply + " \n  \tState \t\t\t: \t"+ match.state +"";
-					}
 				});
 				if( matchesList[roundID].length > 0 )
 					reply = reply + "```";
