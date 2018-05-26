@@ -67,12 +67,15 @@ bot.on("message", function (user, userID, channelID, message, event) {
 					sendMessage(channelID, reply);
 				}); break;
 			case "participant":
-				//var tournamentID = args.shift().toLowerCase();
+				if( args.length > 0 )
+					tournamentID = args.shift().toLowerCase();
 				API.getParticipantList(channelID, tournamentID, true, function(reply){
 					sendMessage(channelID, reply);
 				}); break;
             
 			case "matches":
+				if( args.length > 0 )
+					tournamentID = args.shift().toLowerCase();
 				getMatches(channelID, tournamentID); break;
 			case "admin_disconnect":
 				bot.disconnect();
