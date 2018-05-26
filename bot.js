@@ -224,27 +224,29 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 				return;
 			}
 
-			for(id in matchesList)
+			if(1 == DEBUG )
 			{
-				//matchesList['"'+ id +'"'].forEach
-			}
-
-			for( roundID in matchesList )
-			{
-				if( matchesList[roundID].length > 0 )
+				for( roundID in matchesList )
 				{
-					console.log("ROUND ID : "+ roundID);
-					matchesList[roundID].forEach(function(value, key){
-						console.log("KEY :: " + key + "\n PALYER ID " + value.player1_id + " and " + value.player2_id);
-						//console.log( playersList['"'+value.player1_id+'"'].display_name + " VS " + playersList['"'+value.player2_id+'"'].display_name);
-					});
+					if( matchesList[roundID].length > 0 )
+					{
+						console.log("ROUND ID : "+ roundID);
+						matchesList[roundID].forEach(function(value, key){
+							console.log("KEY :: " + key + "\n PALYER ID " + value.player1_id + " and " + value.player2_id);
+							//console.log( playersList['"'+value.player1_id+'"'].display_name + " VS " + playersList['"'+value.player2_id+'"'].display_name);
+						});
+					}
 				}
 			}
 			for( roundID in matchesList )
 			{
-				if( matchesList[roundID].length > 0 )
+				
+				if( matchesList[roundID].length > 0 && (matchesList[roundID].match.player1_id != undefined || matchesList[roundID].match.player2_id != undefined))
 				{
-					console.log("LIST :: LENGHT ---- " + matchesList[roundID].length);
+					if(1 == DEBUG )
+					{
+						console.log("LIST :: LENGHT ---- " + matchesList[roundID].length);
+					}
 					reply = reply+"\n\n"+ "Round "+roundID+" 	``` ";
 				}
 				else
@@ -257,8 +259,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 						console.log("Player 1 : " + match.player1_id + " Player 2 : " + match.player2_id);
 						console.log(playersList["'"+match.player1_id+"'"] + "  vs " + playersList["'"+match.player2_id+"'"] );
 					}
-					if( match.player1_id != undefined || match.player2_id != undefined)
-					{
+					
 						reply = reply + "\n" + (matchCounter++) + ".\tMatch between  \t: \t";
 						if( !(('"'+match.player1_id+'"') in playersList) )
 						{
@@ -276,7 +277,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 
 						reply = reply + " \n  \tScheduled time \t: \t"+ (match.scheduled_time == null ? "NA" : match.scheduled_time) + "";
 						reply = reply + " \n  \tState \t\t\t: \t"+ match.state +"";
-					}
+					
 				});
 				if( matchesList[roundID].length > 0 )
 					reply = reply + "```";
