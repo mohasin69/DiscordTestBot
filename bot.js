@@ -14,7 +14,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;//"NDQ5MzMyODc5MTIyNzU5Njkx.DejJYQ.ulATC
 const DEBUG = process.env.DEBUG;//1;
 const PORT = process.env.PORT;//65644;
 const Hapi = require('hapi');
-const tournamentID = "elitegunztournament";//"jstestbot1";;
+var tournamentID = "elitegunztournament";//"jstestbot1";;
 
 const server = new Hapi.Server({ port: PORT || 3000 });
 
@@ -76,7 +76,6 @@ bot.on("message", function (user, userID, channelID, message, event) {
 			case "matches":
 				if( args.length > 0 )
 				{
-					console.log(args);
 					tournamentID = args.shift().toLowerCase();
 				}
 				getMatches(channelID, tournamentID); break;
