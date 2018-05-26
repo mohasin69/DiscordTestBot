@@ -224,7 +224,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 				return;
 			}
 
-			if(1 == DEBUG )
+			if (1 == DEBUG)
 			{
 				for( roundID in matchesList )
 				{
@@ -240,13 +240,8 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 			}
 			for( roundID in matchesList )
 			{
-				
-				if( matchesList[roundID].length > 0 && ( ("player1_id" in matchesList[roundID].match ) || ( "player2_id" in matchesList[roundID].match ) ))
+				if( matchesList[roundID].length > 0 )
 				{
-					if(1 == DEBUG )
-					{
-						console.log("LIST :: LENGHT ---- " + matchesList[roundID].length);
-					}
 					reply = reply+"\n\n"+ "Round "+roundID+" 	``` ";
 				}
 				else
@@ -259,7 +254,8 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 						console.log("Player 1 : " + match.player1_id + " Player 2 : " + match.player2_id);
 						console.log(playersList["'"+match.player1_id+"'"] + "  vs " + playersList["'"+match.player2_id+"'"] );
 					}
-					
+					if( match.player1_id != undefined || match.player2_id != undefined)
+					{
 						reply = reply + "\n" + (matchCounter++) + ".\tMatch between  \t: \t";
 						if( !(('"'+match.player1_id+'"') in playersList) )
 						{
@@ -277,7 +273,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 
 						reply = reply + " \n  \tScheduled time \t: \t"+ (match.scheduled_time == null ? "NA" : match.scheduled_time) + "";
 						reply = reply + " \n  \tState \t\t\t: \t"+ match.state +"";
-					
+					}
 				});
 				if( matchesList[roundID].length > 0 )
 					reply = reply + "```";
