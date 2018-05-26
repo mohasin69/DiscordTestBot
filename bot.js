@@ -75,7 +75,10 @@ bot.on("message", function (user, userID, channelID, message, event) {
             
 			case "matches":
 				if( args.length > 0 )
+				{
+					console.log(args);
 					tournamentID = args.shift().toLowerCase();
+				}
 				getMatches(channelID, tournamentID); break;
 			case "admin_disconnect":
 				bot.disconnect();
