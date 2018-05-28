@@ -51,7 +51,7 @@ bot.on("message", function (user, userID, channelID, message, event) {
 	}
 	
 
-	if (message.substring(0, 1) == prefix) {
+	if (message.substring(0, 2) == prefix) {
 		if (1 == DEBUG) {
 			console.log(message);
 			console.log("----------");
