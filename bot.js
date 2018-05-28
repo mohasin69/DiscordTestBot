@@ -36,7 +36,7 @@ var bot = new Discord.Client({
 });
 
 //console.log(pilotList);
-const prefix = "!"
+const prefix = "!!"
 /*Event area*/
 bot.on("ready", function (event) {
 	console.log("Connected!");
