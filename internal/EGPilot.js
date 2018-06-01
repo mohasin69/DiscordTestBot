@@ -63,7 +63,10 @@ module.exports =
                     reply = reply + "\n" + (index + 1) + ". " + element.participant.display_name;
                     participantList['"'+element.participant.id+'"'] = {};
                     participantList['"'+element.participant.id+'"'] = element.participant;
-                    console.log("\n "+ participantList['"'+element.participant.id+'"'].display_name);
+                    
+                    if (1 == DEBUG) {
+                        console.log("\n "+ participantList['"'+element.participant.id+'"'].display_name);
+                    }
                 });
                 
             }

@@ -230,7 +230,6 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 				{
 					if( matchesList[roundID].length > 0 )
 					{
-						
 						console.log("ROUND ID : "+ roundID);
 						matchesList[roundID].forEach(function(value, key){
 							console.log("KEY :: " + key + "\n PALYER ID " + value.player1_id + " and " + value.player2_id);
@@ -244,10 +243,10 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 				if( matchesList[roundID].length > 0 )
 				{
 					reply = reply+"\n\n";
-					if( parseInt(roundID,10) < 0 )
-						reply = reply+ + "Losers "+ "Round "+roundID+" 	``` ";
+					if( (matchesList[roundID])[0].round < 0 )
+						reply = reply+ "Losers Round "+(matchesList[roundID])[0].round+" 	``` ";
 					else
-						reply = reply+ "Round "+roundID+" 	``` ";
+						reply = reply+ "Round "+(matchesList[roundID])[0].round+" 	``` ";
 				}
 				else
 					continue;
