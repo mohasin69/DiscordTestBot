@@ -1,8 +1,9 @@
-const API_TOKEN = process.env.API_TOKEN;;//"mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY";
-const BOT_TOKEN = process.env.BOT_TOKEN;//"NDQ5MzMyODc5MTIyNzU5Njkx.DejJYQ.ulATCbUrgmyoocE0Vbr7_dxz0SM";//
-const DEBUG = process.env.DEBUG;//1;
+const API_TOKEN = process.env.API_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const DEBUG = process.env.DEBUG;
 
 var participantList = [];
+var checkedInParticipantList = [];
 var tournamentList = [];
 module.exports =
 {
@@ -42,7 +43,7 @@ module.exports =
         });
     },
 
-    getParticipantList : function (channelID, tournamentID, sendList = true, callback) {
+    getParticipantList : function (channelID, tournamentID, sendList = true, checkedInList = false, callback) {
 
         const request = require('request');
 
@@ -57,14 +58,33 @@ module.exports =
                 return console.log(err);
             }
             
-            var reply = "**Participant List in " + tournamentID.toUpperCase() + "** 	```";
+            var reply = "";
+            if( checkedInList == false )
+                reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** 	```";
+            else
+                reply = reply + "**Checked in Participant List for " + tournamentID.toUpperCase() + "** 	```";
+                
             if (0 < response.length && typeof response[0].participant != undefined) {
                 response.forEach(function (element, index) {
-                    reply = reply + "\n" + (index + 1) + ". " + element.participant.display_name;
-                    participantList['"'+element.participant.id+'"'] = {};
-                    participantList['"'+element.participant.id+'"'] = element.participant;
                     
-                    if (1 == DEBUG) {
+                    if( checkedInList == false )
+                    {
+                        reply = reply + "\n" + (index + 1) + ". " + element.participant.display_name;
+                        participantList['"'+element.participant.id+'"'] = {};
+                        participantList['"'+element.participant.id+'"'] = element.participant;
+                    }
+                    else if( element.participant.checked_in_at !== null && element.participant.checked_in_at.length >4 )
+                    {
+                       
+                        reply = reply + "\n" + (index + 1) + ". " + element.participant.display_name;
+                        checkedInParticipantList['"'+element.participant.id+'"'] = {}; 
+                        checkedInParticipantList['"'+element.participant.id+'"'] = element.participant;
+
+                        console.log("\n "+ checkedInParticipantList['"'+element.participant.id+'"'].display_name);
+                        console.log("\n "+ checkedInParticipantList['"'+element.participant.id+'"'].checked_in_at);
+                    }
+
+                    if (1 == DEBUG && undefined != participantList['"'+element.participant.id+'"'] ) {
                         console.log("\n "+ participantList['"'+element.participant.id+'"'].display_name);
                     }
                 });
@@ -78,14 +98,16 @@ module.exports =
             {
                 callback(reply);
             }
-            else
+            else if( true == checkedInList )
                 callback(participantList);
+            else
+                callback(checkedInParticipantList);
         });
 
 
     }
 
-
+   
 
 
 }
