@@ -1,6 +1,11 @@
-const API_TOKEN = process.env.API_TOKEN;
+const API_TOKEN = process.env.API_TOKEN;;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
+const PORT = process.env.PORT;
+const Hapi = require('hapi');
+var tournamentID = "elitegunztournament";
+
+
 
 var participantList = [];
 var checkedInParticipantList = [];
@@ -43,7 +48,7 @@ module.exports =
         });
     },
 
-    getParticipantList : function (channelID, tournamentID, sendList = true, checkedInList = false, callback) {
+    getParticipantList : function (channelID, tournamentID, sendList = true, callback) {
 
         const request = require('request');
 
@@ -59,6 +64,7 @@ module.exports =
             }
             
             var reply = "";
+            var checkedInList = false;
             if( checkedInList == false )
                 reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** 	```";
             else
@@ -77,11 +83,11 @@ module.exports =
                     {
                        
                         reply = reply + "\n" + (index + 1) + ". " + element.participant.display_name;
-                        checkedInParticipantList['"'+element.participant.id+'"'] = {}; 
-                        checkedInParticipantList['"'+element.participant.id+'"'] = element.participant;
+                        participantList['"'+element.participant.id+'"'] = {}; 
+                        participantList['"'+element.participant.id+'"'] = element.participant;
 
-                        console.log("\n "+ checkedInParticipantList['"'+element.participant.id+'"'].display_name);
-                        console.log("\n "+ checkedInParticipantList['"'+element.participant.id+'"'].checked_in_at);
+                        console.log("\n "+ participantList['"'+element.participant.id+'"'].display_name);
+                        console.log("\n "+ participantList['"'+element.participant.id+'"'].checked_in_at);
                     }
 
                     if (1 == DEBUG && undefined != participantList['"'+element.participant.id+'"'] ) {
@@ -98,10 +104,9 @@ module.exports =
             {
                 callback(reply);
             }
-            else if( true == checkedInList )
-                callback(participantList);
             else
-                callback(checkedInParticipantList);
+                callback(participantList);
+           
         });
 
 
