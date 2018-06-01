@@ -9,12 +9,12 @@
 var Discord = require('discord.io');
 
 
-const API_TOKEN = process.env.API_TOKEN;;//"mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY";
-const BOT_TOKEN = process.env.BOT_TOKEN;//"NDQ5MzMyODc5MTIyNzU5Njkx.DejJYQ.ulATCbUrgmyoocE0Vbr7_dxz0SM";//
-const DEBUG = process.env.DEBUG;//1;
-const PORT = process.env.PORT;//65644;
+const API_TOKEN = process.env.API_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const DEBUG = process.env.DEBUG;
+const PORT = process.env.PORT;
 const Hapi = require('hapi');
-var tournamentID = "elitegunztournament";//"jstestbot1";;
+var tournamentID = "elitegunztournament";
 
 const server = new Hapi.Server({ port: PORT || 3000 });
 
@@ -69,10 +69,16 @@ bot.on("message", function (user, userID, channelID, message, event) {
 			case "participant":
 				if( args.length > 0 )
 					tournamentID = args.shift().toLowerCase();
-				API.getParticipantList(channelID, tournamentID, true, function(reply){
+				API.getParticipantList(channelID, tournamentID, true,false, function(reply){
 					sendMessage(channelID, reply);
 				}); break;
-            
+			case "checkedin":
+				if( args.length > 0 )
+					tournamentID = args.shift().toLowerCase();
+				API.getParticipantList(channelID, tournamentID, true, true, function(reply){
+					sendMessage(channelID, reply);
+				}); break;
+
 			case "matches":
 				if( args.length > 0 )
 				{
