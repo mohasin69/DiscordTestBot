@@ -8,13 +8,13 @@
 /*Variable area*/
 var Discord = require('discord.io');
 
-
 const API_TOKEN = process.env.API_TOKEN;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
 const PORT = process.env.PORT;
 const Hapi = require('hapi');
 var tournamentID = "elitegunztournament";
+
 
 const server = new Hapi.Server({ port: PORT || 3000 });
 
@@ -69,15 +69,15 @@ bot.on("message", function (user, userID, channelID, message, event) {
 			case "participant":
 				if( args.length > 0 )
 					tournamentID = args.shift().toLowerCase();
-				API.getParticipantList(channelID, tournamentID, true,false, function(reply){
+				API.getParticipantList(channelID, tournamentID, true, function(reply){
 					sendMessage(channelID, reply);
 				}); break;
-			case "checkedin":
-				if( args.length > 0 )
-					tournamentID = args.shift().toLowerCase();
-				API.getParticipantList(channelID, tournamentID, true, true, function(reply){
-					sendMessage(channelID, reply);
-				}); break;
+			// case "checkedin":
+			// 	if( args.length > 0 )
+			// 		tournamentID = args.shift().toLowerCase();
+			// 	API.getParticipantList(channelID, tournamentID, true, true, function(reply){
+			// 		sendMessage(channelID, reply);
+			// 	}); break;
 
 			case "matches":
 				if( args.length > 0 )
