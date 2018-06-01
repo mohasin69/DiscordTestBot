@@ -242,7 +242,11 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 			{
 				if( matchesList[roundID].length > 0 )
 				{
-					reply = reply+"\n\n"+ "Round "+roundID+" 	``` ";
+					reply = reply+"\n\n";
+					if( (matchesList[roundID])[0].round < 0 )
+						reply = reply+ "Losers Round "+(matchesList[roundID])[0].round+" 	``` ";
+					else
+						reply = reply+ "Round "+(matchesList[roundID])[0].round+" 	``` ";
 				}
 				else
 					continue;
