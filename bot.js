@@ -5,16 +5,20 @@
 //
 // Constant variables
 //
-/*Variable area*/
-var Discord = require('discord.io');
-
-
+const prefix = "!!"
 const API_TOKEN = process.env.API_TOKEN;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
 const PORT = process.env.PORT;
 const Hapi = require('hapi');
+
+//
+// Variable area
+//
+var Discord = require('discord.io');
+
 var tournamentID = "elitegunztournament";
+
 
 const server = new Hapi.Server({ port: PORT || 3000 });
 
@@ -35,9 +39,10 @@ var bot = new Discord.Client({
 	autorun: true
 });
 
-//console.log(pilotList);
-const prefix = "!!"
-/*Event area*/
+
+//
+// EVENTS
+//
 bot.on("ready", function (event) {
 	console.log("Connected!");
 	console.log("Logged in as: ");
@@ -69,15 +74,15 @@ bot.on("message", function (user, userID, channelID, message, event) {
 			case "participant":
 				if( args.length > 0 )
 					tournamentID = args.shift().toLowerCase();
-				API.getParticipantList(channelID, tournamentID, true,false, function(reply){
+				API.getParticipantList(channelID, tournamentID, true, function(reply){
 					sendMessage(channelID, reply);
 				}); break;
-			case "checkedin":
-				if( args.length > 0 )
-					tournamentID = args.shift().toLowerCase();
-				API.getParticipantList(channelID, tournamentID, true, true, function(reply){
-					sendMessage(channelID, reply);
-				}); break;
+			// case "checkedin":
+			// 	if( args.length > 0 )
+			// 		tournamentID = args.shift().toLowerCase();
+			// 	API.getParticipantList(channelID, tournamentID, true, true, function(reply){
+			// 		sendMessage(channelID, reply);
+			// 	}); break;
 
 			case "matches":
 				if( args.length > 0 )
@@ -246,17 +251,9 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 			}
 			for( roundID in matchesList )
 			{
-				if( matchesList[roundID].length > 0 )
-				{
-					reply = reply+"\n\n";
-					if( (matchesList[roundID])[0].round < 0 )
-						reply = reply+ "Losers Round "+(matchesList[roundID])[0].round+" 	``` ";
-					else
-						reply = reply+ "Round "+(matchesList[roundID])[0].round+" 	``` ";
-				}
-				else
-					continue;
+				
 				var matchCounter = 1;
+				var printHeaderFlag = true;
 				matchesList[roundID].forEach(function(match,matchID)
 				{
 					if(1 == DEBUG )
@@ -266,26 +263,43 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 					}
 					if( match.player1_id != undefined || match.player2_id != undefined)
 					{
-						reply = reply + "\n" + (matchCounter++) + ".\tMatch between  \t: \t";
-						if( !(('"'+match.player1_id+'"') in playersList) )
-						{
-							reply = reply + "NA";
-						}
-						else
-							reply = reply + playersList['"'+match.player1_id+'"'].display_name;
-							reply = reply + "\tV/S\t";
-						if( !(('"'+match.player2_id+'"') in playersList) )
-						{
-							reply = reply + " <--->";
-						}
-						else
-							reply = reply + playersList['"'+match.player2_id+'"'].display_name;
 
-						reply = reply + " \n  \tScheduled time \t: \t"+ (match.scheduled_time == null ? "NA" : match.scheduled_time) + "";
-						reply = reply + " \n  \tState \t\t\t: \t"+ match.state +"";
+						if( true == printHeaderFlag && matchesList[roundID].length > 0  )
+						{
+							reply = reply+"\n\n";
+							if( (matchesList[roundID])[0].round < 0 )
+								reply = reply+ "Level6 Round "+(matchesList[roundID])[0].round+" 	``` ";
+							else
+								reply = reply+ "Round "+(matchesList[roundID])[0].round+" 	``` ";
+							printHeaderFlag = false;
+						}
+						if( false == printHeaderFlag )
+						{
+							reply = reply + "\n" + (matchCounter++) + ".\tMatch between  \t: \t";
+							if( !(('"'+match.player1_id+'"') in playersList) )
+							{
+								reply = reply + "<--->";
+							}
+							else
+								reply = reply +  playersList['"'+match.player1_id+'"'].display_name;
+								reply = reply + "\tV/S\t";
+							if( !(('"'+match.player2_id+'"') in playersList) )
+							{
+								reply = reply + " <--->";
+							}
+							else
+								reply = reply + playersList['"'+match.player2_id+'"'].display_name;
+
+							reply = reply + " \n  \tScheduled time \t: \t"+ (match.scheduled_time == null ? "NA" : match.scheduled_time) + "";
+							reply = reply + " \n  \tState \t\t\t : \t"+ match.state +"\n";
+						}
+						else
+							return;
+
+						
 					}
 				});
-				if( matchesList[roundID].length > 0 )
+				if( false == printHeaderFlag && matchesList[roundID].length > 0 )
 					reply = reply + "```";
 				matchCounter = 1;
 			}
