@@ -77,12 +77,12 @@ bot.on("message", function (user, userID, channelID, message, event) {
 				API.getParticipantList(channelID, tournamentID, true, function(reply){
 					sendMessage(channelID, reply);
 				}); break;
-			// case "checkedin":
-			// 	if( args.length > 0 )
-			// 		tournamentID = args.shift().toLowerCase();
-			// 	API.getParticipantList(channelID, tournamentID, true, true, function(reply){
-			// 		sendMessage(channelID, reply);
-			// 	}); break;
+			case "open":
+			if( args.length > 0 )
+			{
+				tournamentID = args.shift().toLowerCase();
+			}
+			getMatches(channelID, tournamentID, "open"); break;
 
 			case "matches":
 				if( args.length > 0 )
@@ -187,7 +187,7 @@ function sendFiles(channelID, fileArr, interval) {
 
 
     
-function getMatches(channelID, tournamentID, roundID = 1 )
+function getMatches(channelID, tournamentID, matchType = "" )
 {
 	const request = require('request');
 	var CHALLONGE_URL = 'https://api.challonge.com/v1/tournaments/' + tournamentID + '/matches.json?api_key=' + API_TOKEN;
@@ -199,6 +199,7 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 		if (err) {
 			return console.log(err);
 		}
+		var roundID = 1;
 		var tournamentList = new Array();
 		if (1 == DEBUG)
 			console.log("response.length" + response.length);
@@ -225,7 +226,9 @@ function getMatches(channelID, tournamentID, roundID = 1 )
 				response.forEach(function (element, index) {
 					if( !('"'+ element.match.round +'"' in matchesList) )
 						matchesList['"'+ element.match.round +'"'] = new Array();
-					if( element.match.state != "complete" )
+					if( matchType.length > 0 && element.match.state == matchType )
+						matchesList['"'+ element.match.round +'"'].push(element.match);
+					else if( matchType.length == 0 && element.match.state != "complete" )
 						matchesList['"'+ element.match.round +'"'].push(element.match);
 				});
 			}
