@@ -228,7 +228,7 @@ function getMatches(channelID, tournamentID, matchType = "" )
 						matchesList['"'+ element.match.round +'"'] = new Array();
 					if( matchType.length > 0 && element.match.state == matchType )
 						matchesList['"'+ element.match.round +'"'].push(element.match);
-					else if( element.match.state != "complete" )
+					else if( matchType.length == 0 && element.match.state != "complete" )
 						matchesList['"'+ element.match.round +'"'].push(element.match);
 				});
 			}
