@@ -78,18 +78,23 @@ bot.on("message", function (user, userID, channelID, message, event) {
 					sendMessage(channelID, reply);
 				}); break;
 			case "open":
-			if( args.length > 0 )
-			{
-				tournamentID = args.shift().toLowerCase();
-			}
-			getMatches(channelID, tournamentID, "open"); break;
-
+				if( args.length > 0 )
+				{
+					tournamentID = args.shift().toLowerCase();
+				}
+				getMatches(channelID, tournamentID, "open"); break;
 			case "matches":
 				if( args.length > 0 )
 				{
 					tournamentID = args.shift().toLowerCase();
 				}
 				getMatches(channelID, tournamentID); break;
+			case "pending":
+				if( args.length > 0 )
+				{
+					tournamentID = args.shift().toLowerCase();
+				}
+				getMatches(channelID, tournamentID, "pending"); break;
 			case "admin_disconnect":
 				bot.disconnect();
 				break;
