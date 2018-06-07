@@ -83,7 +83,7 @@ bot.on("message", function (user, userID, channelID, message, event) {
 			case "participant":
 				if( args.length > 0 )
 					tournamentID = args.shift().toLowerCase();
-				API.getParticipantList(channelID, tournamentID, true, function(reply){
+				API.getParticipantList(channelID, tournamentID, true, false, function(reply){
 					sendMessage(channelID, reply);
 				}); break;
 			case "open":
@@ -282,7 +282,7 @@ function getMatches(channelID, tournamentID, matchType = "" )
 		var playersList = [];
 		//participantList.splice(0,participantList.length);
 		
-		API.getParticipantList(channelID, tournamentID, false, function(playersList){
+		API.getParticipantList(channelID, tournamentID, false, false,  function(playersList){
 			
 			sendMessage(channelID, reply);
 		});
@@ -312,7 +312,7 @@ function getMatches(channelID, tournamentID, matchType = "" )
 		var playersList = [];
 		//participantList.splice(0,participantList.length);
 		
-		API.getParticipantList(channelID, tournamentID, false, function(playersList){
+		API.getParticipantList(channelID, tournamentID, false, false, function(playersList){
 			
 
 			// console.log("PLAYERS LIST");
