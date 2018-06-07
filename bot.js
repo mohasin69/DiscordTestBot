@@ -135,7 +135,8 @@ bot.on("message", function (user, userID, channelID, message, event) {
 
 						API.getParticipantList(previousMessage.channelID, previousMessage.tournamentID, true, true, function(reply){
 
-							reply = "### AutoBot ### \n ```" + reply + " ```";
+							reply = "### AutoBot ### \n";
+							reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** ```"; 
 							sendMessage(channelID, reply);
 	
 							// bot.getMessages( { channelID: previousMessage.channelID,limit : 5}, (error, messageArray) => {
