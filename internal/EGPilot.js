@@ -6,7 +6,6 @@ const Hapi = require('hapi');
 var tournamentID = "elitegunztournament";
 
 
-
 var participantList = [];
 var checkedInParticipantList = [];
 var tournamentList = [];
@@ -48,7 +47,7 @@ module.exports =
         });
     },
 
-    getParticipantList : function (channelID, tournamentID, sendList = true, callback) {
+    getParticipantList : function (channelID, tournamentID, sendList = true, autoList = false, callback) {
 
         const request = require('request');
 
@@ -64,11 +63,10 @@ module.exports =
             }
             
             var reply = "";
-            var checkedInList = false;
-            if( checkedInList == false )
-                reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** 	```";
-            else
-                reply = reply + "**Checked in Participant List for " + tournamentID.toUpperCase() + "** 	```";
+            
+
+            if( false == autoList)
+                reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** ```";
                 
             if (0 < response.length && typeof response[0].participant != undefined) {
                 response.forEach(function (element, index) {
@@ -99,7 +97,8 @@ module.exports =
             else {
                 reply = reply + "\n" + "No Participants found...";
             }
-            reply = reply + "```";
+            if( false == autoList)
+                reply = reply + "```";
             if( true == sendList )
             {
                 callback(reply);

@@ -6,12 +6,22 @@
 // Constant variables
 //
 const prefix = "!!"
-const API_TOKEN = process.env.API_TOKEN;
+const API_TOKEN = process.env.API_TOKEN;;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
 const PORT = process.env.PORT;
 const Hapi = require('hapi');
+let autoInterval = process.env.AUTO_INTERVAL;// 600000; //miliseconds 30000 = 10 minutes
+var previousMessage = {
+	msgId : "",
+	channelID : "",
+	guildID : "",
+	tournamentID : "",
+	timestamp : ""
+ };
+ var interval;
 
+ 
 //
 // Variable area
 //
@@ -54,7 +64,6 @@ bot.on("message", function (user, userID, channelID, message, event) {
 		console.log(user + " - " + userID);
 		console.log("in " + channelID);
 	}
-	
 
 	if (message.substring(0, 2) == prefix) {
 		if (1 == DEBUG) {
@@ -95,6 +104,71 @@ bot.on("message", function (user, userID, channelID, message, event) {
 					tournamentID = args.shift().toLowerCase();
 				}
 				getMatches(channelID, tournamentID, "pending"); break;
+
+			case "auto_start":
+				if( args.length > 0 )
+					tournamentID = args.shift().toLowerCase();
+				
+				sendMessage(channelID, "Auto messaging started...");
+				previousMessage.channelID = channelID;
+				previousMessage.tournamentID = tournamentID;
+				
+
+				interval = setInterval (function (){
+					
+					bot.getMessages( { channelID: previousMessage.channelID,limit : 50}, (error, messageArray) => {
+							
+						for( var i = 0; i < messageArray.length; i++ )
+						{
+							if( messageArray[i].content != undefined && messageArray[i].content.indexOf("### AutoBot ### ") != -1 )
+							{
+								previousMessage.msgId = messageArray[i].id;
+								bot.deleteMessage({channelID:previousMessage.channelID, messageID : messageArray[i].id}, (error, response )=>{
+									
+								});
+							}
+							else
+								previousMessage.msgId = "";
+						}
+
+
+
+						API.getParticipantList(previousMessage.channelID, previousMessage.tournamentID, true, true, function(reply){
+
+							reply = "### AutoBot ### \n ```" + reply + " ```";
+							sendMessage(channelID, reply);
+	
+							// bot.getMessages( { channelID: previousMessage.channelID,limit : 5}, (error, messageArray) => {
+	
+							// 	console.log("messageArray \n ******************************\n " + messageArray);
+							// 	for( var i = 0; i < messageArray.length; i++ )
+							// 	{
+							// 		if( messageArray[i].content != undefined && messageArray[i].content.indexOf("### AutoBot ### ") != -1 )
+							// 		{
+							// 			previousMessage.msgId = messageArray[i].id;
+							// 			previousMessage.timestamp = messageArray[i].timestamp;
+							// 			break;
+							// 		}
+							// 		else
+							// 			previousMessage.msgId = "";
+							// 	}
+								
+								
+							// })
+	
+	
+						});
+						
+					})
+					
+					}, 10000); // time between each interval in milliseconds
+				
+				break;
+
+			case "auto_stop":
+				clearInterval(interval);
+				sendMessage(channelID, "Auto messaging stopped..");
+				break;
 			case "admin_disconnect":
 				bot.disconnect();
 				break;
@@ -189,6 +263,32 @@ function sendFiles(channelID, fileArr, interval) {
 }
 
 
+
+function getMatches(channelID, tournamentID, matchType = "" )
+{
+	
+	  
+
+
+	request(CHALLONGE_URL, { json: true }, (err, res, response) => {
+		if (err) {
+			return console.log(err);
+		}
+		var roundID = 1;
+		var tournamentList = new Array();
+		if (1 == DEBUG)
+			console.log("response.length" + response.length);
+
+		var playersList = [];
+		//participantList.splice(0,participantList.length);
+		
+		API.getParticipantList(channelID, tournamentID, false, function(playersList){
+			
+			sendMessage(channelID, reply);
+		});
+		
+	});
+}
 
 
     
