@@ -63,7 +63,7 @@ module.exports =
             }
             
             var reply = "";
-            
+            var checkedInList = false;
 
             if( false == autoList)
                 reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** ```";
