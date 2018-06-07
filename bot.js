@@ -21,7 +21,7 @@ var previousMessage = {
  };
  var interval;
 
- 
+
 //
 // Variable area
 //
@@ -161,7 +161,7 @@ bot.on("message", function (user, userID, channelID, message, event) {
 						
 					})
 					
-					}, 10000); // time between each interval in milliseconds
+					}, autoInterval); // time between each interval in milliseconds
 				
 				break;
 
