@@ -27,8 +27,7 @@ var previousMessage = {
 //
 var Discord = require('discord.io');
 
-var tournamentID = "elitegunztournament";
-
+var tournamentID = process.env.TOURNAMENT_NAME;
 
 const server = new Hapi.Server({ port: PORT || 3000 });
 
@@ -106,6 +105,8 @@ bot.on("message", function (user, userID, channelID, message, event) {
 				getMatches(channelID, tournamentID, "pending"); break;
 
 			case "auto_start":
+				if( previousMessage.channelID.length > 0 )
+					return sendMessage(channelID, "Auto messaging is already scheduled for - " + previousMessage.tournamentID +" \n ``` To start new, please stop the previous auto bot.``` ");
 				if( args.length > 0 )
 					tournamentID = args.shift().toLowerCase();
 				
@@ -135,8 +136,7 @@ bot.on("message", function (user, userID, channelID, message, event) {
 
 						API.getParticipantList(previousMessage.channelID, previousMessage.tournamentID, true, true, function(reply){
 
-							reply = "### AutoBot ### \n";
-							reply = reply + "**Participant List in " + tournamentID.toUpperCase() + "** ```"; 
+							var tempReply = "### AutoBot ### \n **Participant List in " + tournamentID.toUpperCase() + "** ```" + reply + " ```"; 
 							sendMessage(channelID, reply);
 	
 							// bot.getMessages( { channelID: previousMessage.channelID,limit : 5}, (error, messageArray) => {
@@ -168,6 +168,8 @@ bot.on("message", function (user, userID, channelID, message, event) {
 
 			case "auto_stop":
 				clearInterval(interval);
+				previousMessage.channelID = "";
+				previousMessage.tournamentID = "";
 				sendMessage(channelID, "Auto messaging stopped..");
 				break;
 			case "admin_disconnect":

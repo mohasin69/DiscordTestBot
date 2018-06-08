@@ -3,7 +3,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
 const PORT = process.env.PORT;
 const Hapi = require('hapi');
-var tournamentID = "elitegunztournament";
+var tournamentID = process.env.TOURNAMENT_NAME; //"elitegunztournament";
 
 
 var participantList = [];
