@@ -2,7 +2,6 @@ const API_TOKEN = process.env.API_TOKEN;;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const DEBUG = process.env.DEBUG;
 const PORT = process.env.PORT;
-const Hapi = require('hapi');
 var tournamentID = "elitegunztournament";
 
 
@@ -11,6 +10,8 @@ var checkedInParticipantList = [];
 var tournamentList = [];
 module.exports =
 {
+
+   
     getTournamentList : function (channelID, callback) {
 
         const request = require('request');
