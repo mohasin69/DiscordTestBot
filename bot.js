@@ -467,7 +467,6 @@ const tlcfg = {
       var EG1 = [];
       var EG2 = [];
 
-      console.log(tlcfg.roles);
       membersList.forEach(function(value,key){
         
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[0]) !== -1 )
