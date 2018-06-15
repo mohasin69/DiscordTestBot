@@ -490,7 +490,7 @@ const tlcfg = {
 
       msg.channel.createMessage(replyList);
 
-      replyList = "*** ✯ΞG2 MΞMBΞRS✯™ ***  ";
+      replyList = "\n\n *** ✯ΞG2 MΞMBΞRS✯™ ***  ";
       for(index=1; index<EG2.length; index++)
       {
         replyList = replyList + "\n"+ (index)+ " :\t <@" + EG2[index].id+ ">";
