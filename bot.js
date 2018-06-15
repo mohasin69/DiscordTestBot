@@ -8,7 +8,7 @@ const tlcfg = {
   };
   
   var tournamentID = "elitegunztournament";
-  var API_TOKEN = "mlrst8bC4RziA1YiyhDYJplGe87KkzDKS8J2lHFY"
+  var API_TOKEN = process.env.API_TOKEN;
   const API = require("./internal/EGPilot.js");
 
   let rolesList = [];
@@ -467,6 +467,7 @@ const tlcfg = {
       var EG1 = [];
       var EG2 = [];
 
+      console.log(tlcfg.roles);
       membersList.forEach(function(value,key){
         
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[0]) !== -1 )
@@ -486,18 +487,17 @@ const tlcfg = {
       {
         replyList = replyList + "\n"+ (index)+ " :\t <@"+ EG1[index].id+">";
       }
-      replyList = replyList + "\n-------------------------\n Total : "+ ((EG1.length)- 1)+" ``` ";  
+      replyList = replyList + "\n-------------------------\n Total : "+ ((EG1.length)- 1)+"";  
 
       msg.channel.createMessage(replyList);
+
       replyList = "*** ✯ΞG2 MΞMBΞRS✯™ ***  ";
       for(index=1; index<EG2.length; index++)
       {
-        replyList = replyList + "\n"+ (index)+ " :\t <@" + EG1[index].id+ ">";
+        replyList = replyList + "\n"+ (index)+ " :\t <@" + EG2[index].id+ ">";
       }
       
-     
       replyList = replyList + "\n-------------------------\n Total : "+((EG2.length)- 1)+" "; 
-      
 
       msg.channel.createMessage(replyList);
     }
