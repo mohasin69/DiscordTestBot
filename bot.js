@@ -471,10 +471,14 @@ const tlcfg = {
       membersList.forEach(function(value,key){
         
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[0]) !== -1 )
+        {
+          console.log("FOUND match")
           EG1.push(value.user);
+        }
 
       })
       
+      console.log(EG1)
       
       membersList.forEach(function(value,key){
         
@@ -482,6 +486,8 @@ const tlcfg = {
           EG2.push(value.user);
 
       })
+      console.log(EG2)
+
       var index = 1;
       for(index=1; index<EG1.length; index++)
       {
