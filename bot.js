@@ -469,7 +469,7 @@ const tlcfg = {
 
       console.log(tlcfg.roles);
       membersList.forEach(function(value,key){
-        
+        console.log(value + "\n ----- \n");
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[0]) !== -1 )
         {
           console.log("FOUND match")
@@ -481,7 +481,7 @@ const tlcfg = {
       console.log(EG1)
       
       membersList.forEach(function(value,key){
-        
+        console.log(value + "\n ----- \n");
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[1]) !== -1 )
           EG2.push(value.user);
 
