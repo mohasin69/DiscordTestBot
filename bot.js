@@ -4,7 +4,7 @@ const tlcfg = {
     ownner : process.env.OWNERS,
     playingStatus : process.env.PLAYING_STATUS,
     tsChannelsEnabled : true,
-    roles : process.env.EG_PILOT_ROLES
+    roles : [process.env.EG1_PILOT,process.env.EG2_PILOT]
   };
   
   var tournamentID = "elitegunztournament";
@@ -469,25 +469,19 @@ const tlcfg = {
 
       console.log(tlcfg.roles);
       membersList.forEach(function(value,key){
-        console.log(value.user + "\n ----- \n" + " index of "+ value.roles.indexOf( tlcfg.roles[0]) + "  value.roles " +  value.roles + "tlcfg.roles[0]" + tlcfg.roles[0] );
+        
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[0]) !== -1 )
-        {
-          console.log("FOUND match")
           EG1.push(value.user);
-        }
 
       })
       
-      console.log(EG1)
       
       membersList.forEach(function(value,key){
-        console.log(value.user + "\n ----- \n" + " index of "+ value.roles.indexOf( tlcfg.roles[1]) + "  value.roles " +  value.roles + "tlcfg.roles[1]" + tlcfg.roles[1] );
+        
         if( value.user.bot == false  && value.roles.indexOf( tlcfg.roles[1]) !== -1 )
           EG2.push(value.user);
 
       })
-      console.log(EG2)
-
       var index = 1;
       for(index=1; index<EG1.length; index++)
       {
@@ -503,7 +497,9 @@ const tlcfg = {
         replyList = replyList + "\n"+ (index)+ " :\t <@" + EG2[index].id+ ">";
       }
       
+     
       replyList = replyList + "\n-------------------------\n Total : "+((EG2.length)- 1)+" "; 
+      
 
       msg.channel.createMessage(replyList);
     }
