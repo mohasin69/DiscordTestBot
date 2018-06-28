@@ -113,6 +113,7 @@ const tlcfg = {
     if (command.toLowerCase() === "exec") return exec()
     if (command.toLowerCase() === "patreon") return patreon()
     if (command.toLowerCase() === "pilots") return getPlayersList()
+    if (command.toLowerCase() === "bans") return getBanList()
     if (command.toLowerCase() === "admin_message_all") 
     {
         return sendToAllGuilds(args.join(" "));
@@ -452,6 +453,24 @@ const tlcfg = {
   
     }
 
+    async function getBanList()
+    {
+      console.log(msg.channel.guild.id);
+      var membersList = msg.channel.guild.id;
+      var promise = bot.getGuildBans(membersList);
+      var sendFields = " *** USER BAN LIST *** ```";
+      promise.then(function(list){
+        for(var i =0; i < list.length; i++)
+        {
+          sendFields = sendFields + "\n\n"+ (i+1) +".\t  Username\t  :\t" + list[i].user.username;
+          sendFields = sendFields + "\n\t\tReason\t\t:\t" + list[i].reason;
+          sendFields = sendFields + "\n\t\tUser desc\t :\t" + list[i].user.discriminator;
+
+        }
+        sendFields = sendFields + "```";
+        msg.channel.createMessage(sendFields)
+      })
+    }
     async function getPlayersList(clanId){
       const membersList = msg.channel.guild.members;
       let replyList = " *** ✯ΞG1 MΞMBΞRS✯™ ***  ";
