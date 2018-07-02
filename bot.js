@@ -753,7 +753,7 @@ bot.on("messageCreate", async msg => {
         }
       })
 
-      bot.createMessage("460803599686172672",
+      bot.createMessage("463134158403796992",
         {
           embed: {
             color: 0x7188d9,
@@ -830,7 +830,7 @@ bot.on("messageCreate", async msg => {
           }
         })
 
-        bot.createMessage("460803599686172672",
+        bot.createMessage("463134158403796992",
           {
             embed: {
               color: 0x7188d9,
