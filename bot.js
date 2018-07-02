@@ -660,9 +660,6 @@ bot.on("messageCreate", async msg => {
         // guildMembers.push( obj )
       })
     }
-    console.log("***************************************\n")
-    console.log(guildMembers);
-    console.log("\n***************************************\n")
     return true;
   }
 
