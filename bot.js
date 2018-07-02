@@ -1,19 +1,29 @@
+
 const tlcfg = {
+    webhook : process.env.WEBHOOK,
     token: process.env.BOT_TOKEN,
     prefix : process.env.PREFIX,
     ownner : process.env.OWNERS,
     playingStatus : process.env.PLAYING_STATUS,
     tsChannelsEnabled : true,
-    roles : [process.env.EG1_PILOT,process.env.EG2_PILOT]
+    roles : { solid : process.env.SOLID_CLAN_ID, ghosts : process.env.GHOSTS_CLAN_ID, vapor : process.env.VAPOR_CLAN_ID}
   };
-  
+
+
+  var guildMembers = {};
+  const linkCommandPrefix = "link";
   var tournamentID = "elitegunztournament";
   var API_TOKEN = process.env.API_TOKEN;
   const API = require("./internal/EGPilot.js");
 
-  let rolesList = [];
-  const ALLOWED_ROLES = process.env.ALLOWED_ROLES;
+  const ALLOWED_ROLES = [process.env.ALLOWED_ROLES]
   const DEBUG = process.env.DEBUG;
+  //
+  // clan details
+  //
+  let pilotDetails = [];
+  let pilotIdList = [];
+
   const fs = require("fs")
   const Eris = require("eris")
   const bot = new Eris(tlcfg.token, { maxShards: "auto", getAllUsers: true })
@@ -37,6 +47,7 @@ const tlcfg = {
       name: playStatus,
       type: 0
     })
+
   })
   
   //
@@ -44,39 +55,45 @@ const tlcfg = {
   //
   bot.on("messageReactionAdd", async (msg, emoji, userid) => {
   
-    var getMessageOfReaction = bot.getMessage(msg.channel.id, msg.id);
-    var command = "";
+    // var getMessageOfReaction = bot.getMessage(msg.channel.id, msg.id);
+    // var command = "";
     
   
-    getMessageOfReaction.then((response) => {
-      var flagCommand = emoji.name.toString();
-      let langs = require("./langmap.json")
-      var emojiFlags = require('emoji-flags');
-      var flagsJson = require('./flags.json');
-      let LangMap = new Map()
-      let thingToTranslate = response.content;
-      var flagEmojis = emojiFlags.data;
+    // getMessageOfReaction.then((response) => {
+    //   var flagCommand = emoji.name.toString();
+    //   let langs = require("./langmap.json")
+    //   var emojiFlags = require('emoji-flags');
+    //   var flagsJson = require('./flags.json');
+    //   let LangMap = new Map()
+    //   let thingToTranslate = response.content;
+    //   var flagEmojis = emojiFlags.data;
       
-      if( 1 == DEBUG )
-        console.log("thingToTranslate :: " + thingToTranslate);
+    //   if( 1 == DEBUG )
+    //     console.log("thingToTranslate :: " + thingToTranslate);
   
-      if (flagCommand === "lang") return languageDetection(thingToTranslate)
-      for (let l in langs) {
-        for (let a in langs[l].alias) {
-          LangMap.set(langs[l].alias[a], (thingToTranslate) => {
-            return translateFunction(l, thingToTranslate, `:flag_${langs[l].flag}:`)
-          })
-        }
-      }
+    //   if (flagCommand === "lang") return languageDetection(thingToTranslate)
+    //   for (let l in langs) {
+    //     for (let a in langs[l].alias) {
+    //       LangMap.set(langs[l].alias[a], (thingToTranslate) => {
+    //         return translateFunction(l, thingToTranslate, `:flag_${langs[l].flag}:`)
+    //       })
+    //     }
+    //   }
   
       
        
-    }); // End of getMessageOfReaction
+    //}); // End of getMessageOfReaction
   }); // ENd of messageReactionAdd
   
   
   bot.on("messageCreate", async msg => {
     if(msg.author.bot) return
+
+    if( msg.channel.id == "461425409536294933" )
+    {
+      linkIgnToDiscordId();
+      return; 
+    }
     const tsChannelsEnabled = tlcfg.tsChannelsEnabled
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toString().toLowerCase();
@@ -114,6 +131,7 @@ const tlcfg = {
     if (command.toLowerCase() === "patreon") return patreon()
     if (command.toLowerCase() === "pilots") return getPlayersList()
     if (command.toLowerCase() === "bans") return getBanList()
+    if (command.toLowerCase() === "link") return linkIgnToDiscordId(true)
     if (command.toLowerCase() === "admin_message_all") 
     {
         return sendToAllGuilds(args.join(" "));
@@ -452,7 +470,7 @@ const tlcfg = {
       }
   
     }
-
+    
     async function getBanList()
     {
       console.log(msg.channel.guild.id);
@@ -471,6 +489,8 @@ const tlcfg = {
         msg.channel.createMessage(sendFields)
       })
     }
+
+    
     async function getPlayersList(clanId){
       const membersList = msg.channel.guild.members;
       let replyList = " *** ✯ΞG1 MΞMBΞRS✯™ ***  ";
@@ -652,6 +672,193 @@ const tlcfg = {
             
         });
     }
+
+    function fillAllMembers()
+    {
+      //var obj ={};
+      const membersList = msg.channel.guild.members;
+
+      //if( guildMembers.length === 0 || membersList.length > guildMembers.length )
+      {
+        membersList.forEach(function(value,key){
+          var id = value.id;
+          
+          guildMembers[id] = { username :  value.user.username, discriminator : value.user.discriminator, roles : value.roles };
+         // guildMembers.push( obj )
+        })
+      }
+      console.log("***************************************\n")
+      console.log(guildMembers);
+      console.log("\n***************************************\n")
+      return true;
+    }
+
+    function getAllGuildRoles()
+    {
+      var guildRoles = msg.channel.guild.roles;
+      return guildRoles;
+    }
+
+    async function linkIgnToDiscordId(rebuild = false)
+    {
+      let linkers = [];
+      fillAllMembers();
+      const roles = getAllGuildRoles();
+
+      if( pilotIdList.indexOf(msg.author.id) != -1 )
+      {
+        msg.channel.createMessage({
+          embed: {
+            color: 0x7188d9,
+            fields: [
+              {
+                name: "Status",
+                value: "Your ID is already added. If its not you, let the officers know about it."
+              }
+            ]
+          }
+        })
+        return;
+      }
+
+      // console.log("MembersList\n*****************************");
+      // console.log(guildMembers);
+      // console.log("\n\n\nguildRoles\n*****************************");
+      // console.log(roles);
+
+      let messagesPromise = bot.getMessages("461425409536294933",200);
+      messagesPromise.then(function(MessagesList){
+        var reply = "***Members ***```\nSr\tPilot Name";
+        for( var index =0 ; index<MessagesList.length; index++ )
+        {
+          const args = MessagesList[index].content.trim().split(/ +/g);
+          if( args[0].length == 6 )
+          {
+            var memberobj = guildMembers[MessagesList[index].author.id]
+            var clanName = "";
+            for( role in tlcfg.roles )
+            {
+              if( memberobj.roles.indexOf(tlcfg.roles[role]) != -1 )
+              {
+                clanName = role;
+                break;
+              }
+            };
+            pilotIdList.push(msg.author.id);
+            linkers.push({  username : MessagesList[index].author.username, 
+                            dId : MessagesList[index].author.discriminator, 
+                            gameroomID : args[0], 
+                            clan : clanName });
+          }
+        }
+        if( rebuild )
+          pilotDetails.splice(0, pilotDetails.length);
+
+        pilotDetails = linkers;
+        var flagBreak = 0;
+        for(var index = 0; index < pilotDetails.length; index++)
+        {
+          if( index == 25 )
+          {
+            flagBreak = 1;
+            index--;
+            break;
+          }
+          reply = reply +"\n" + (index+1) + ".\t" + pilotDetails[index].username + " \t" + pilotDetails[index].clan.toUpperCase() + "\t"+pilotDetails[index].dId +"\t" + pilotDetails[index].gameroomID;
+        }
+        reply = reply + "```";
+
+        if( !rebuild )
+        {
+          bot.createMessage("460798231576576020",reply);
+          bot.createMessage("463134158403796992",reply);
+        }
+        else
+        {
+          msg.channel.createMessage(reply);
+        }
+        
+        if( flagBreak )
+        {
+          reply = "```";
+
+          for(index; index < pilotDetails.length; index++)
+          {
+          
+            reply = reply +"\n" + (index+1) + ".\t" + pilotDetails[index].username + " \t" + pilotDetails[index].clan.toUpperCase() + "\t"+pilotDetails[index].dId +"\t" + pilotDetails[index].gameroomID;
+          }
+          reply = reply + "```";
+          if( !rebuild )
+          {
+            bot.createMessage("460798231576576020",reply);
+            bot.createMessage("463134158403796992",reply);
+          }
+          else
+          {
+            msg.channel.createMessage(reply);
+          }
+        }
+
+        if( !rebuild )
+        {
+          msg.channel.createMessage({
+            embed: {
+              color: 0x7188d9,
+              fields: [
+                {
+                  name: "Status",
+                  value: "Gameroom id linked successfully. Officers are notified."
+                }
+              ]
+            }
+          })
+
+          bot.createMessage("460803599686172672",
+          {
+            embed: {
+              color: 0x7188d9,
+              fields: [
+                {
+                  name: "New ID linked for user",
+                  value: msg.author.username
+                }
+              ]
+            }
+          })
+        }
+        else
+        {
+          msg.channel.createMessage({
+            embed: {
+              color: 0x7188d9,
+              fields: [
+                {
+                  name: "Status",
+                  value: "Linkage rebuild successful."
+                }
+              ]
+            }
+          })
+        }
+
+
+      });
+      // console.log(msg.member);
+      // let adminRole = [];
+      // msg.channel.guild.roles.forEach(function(value,key){
+      //     if( ALLOWED_ROLES.indexOf(value.name ) != -1)
+      //     {
+      //       adminRole.push(value.id);
+      //     }
+      // });
+      // if(msg.member.roles.some(r=>adminRole.includes(r)) ) {
+      //   msg.channel.createMessage(`https://discordapp.com/oauth2/authorize?client_id=${bot.user.id}&scope=bot&permissions=2146958591`)
+      // } else {
+      //   msg.channel.createMessage(`This command is reserved for user with role - \n\t` + ALLOWED_ROLES.join("\n\t"));
+      // }
+    }
+
+
 
   
   })
