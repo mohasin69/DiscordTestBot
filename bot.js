@@ -721,7 +721,7 @@ bot.on("messageCreate", async msg => {
           index--;
           break;
         }
-        reply = reply + "\n" + (index + 1) + ".\t" + pilotDetails[index].username + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID;
+        reply = reply + "\n" + (index + 1)  + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID + ".\t" + pilotDetails[index].username;
       }
       reply = reply + "```";
 
@@ -733,7 +733,7 @@ bot.on("messageCreate", async msg => {
 
         for (index; index < pilotDetails.length; index++) {
 
-          reply = reply + "\n" + (index + 1) + ".\t" + pilotDetails[index].username + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID;
+          reply = reply + "\n" + (index + 1) + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID + ".\t" + pilotDetails[index].username ;
         }
         reply = reply + "```";
         bot.createMessage("460798231576576020", reply);
@@ -801,7 +801,7 @@ bot.on("messageCreate", async msg => {
             index--;
             break;
           }
-          reply = reply + "\n" + (index + 1) + ".\t" + pilotDetails[index].username + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID;
+          reply = reply + "\n" + (index + 1) + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID + ".\t"  + pilotDetails[index].clan.toUpperCase() + " \t"  + pilotDetails[index].username ;
         }
         reply = reply + "```";
 
@@ -812,7 +812,7 @@ bot.on("messageCreate", async msg => {
 
           for (index; index < pilotDetails.length; index++) {
 
-            reply = reply + "\n" + (index + 1) + ".\t" + pilotDetails[index].username + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID;
+            reply = reply + "\n" + (index + 1) + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID+ " \t" + pilotDetails[index].clan.toUpperCase()  + ".\t" + pilotDetails[index].username ;
           }
           reply = reply + "```";
           msg.channel.createMessage(reply);
