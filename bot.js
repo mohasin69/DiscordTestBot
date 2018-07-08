@@ -7,23 +7,27 @@ const tlcfg = {
   ownner: process.env.OWNERS,
   playingStatus: process.env.PLAYING_STATUS,
   tsChannelsEnabled: true,
-  roles: { solid: process.env.SOLID_CLAN_ID, ghosts: process.env.GHOSTS_CLAN_ID, vapor: process.env.VAPOR_CLAN_ID }
+  roles: { solid: process.env.SOLID_CLAN_ID, ghosts: process.env.GHOSTS_CLAN_ID, vapor: process.env.VAPOR_CLAN_ID },
+  botBotificationChannel : BOT_NOTIFICATION_CHANNEL_ID,
+  botLeadersChannel : LEADERS_CHANNEL_ID
 };
 
-
+var gameroomID = [];
 var guildMembers = {};
 const linkCommandPrefix = "link";
 var tournamentID = "elitegunztournament";
 var API_TOKEN = process.env.API_TOKEN;
 const API = require("./internal/EGPilot.js");
-
-const ALLOWED_ROLES = [process.env.ALLOWED_ROLES]
+var guildMembersRole = [];
+const ALLOWED_ROLES = [process.env.ADMIN_ROLE_1,process.env.ADMIN_ROLE_2,process.env.ADMIN_ROLE_3]
 const DEBUG = process.env.DEBUG;
 //
 // clan details
 //
-let pilotDetails = [];
-let pilotIdList = [];
+let config = {
+  verificationChannel : [],
+  verifiedRoles : []
+};
 
 const fs = require("fs")
 const Eris = require("eris")
@@ -50,6 +54,25 @@ bot.on("ready", () => {
   })
 
 })
+
+bot.on("message", async (guild,member) => { 
+  console.log(guild)
+  console.log(member)
+  
+  
+} );
+
+// bot.on("guildMemberAdd", async (guild,member) => { 
+//   console.log(member.user)
+//   var userid = bot.getDMChannel(member.user.id);
+//   userid.then(function(data){
+//     console.log("\n "+ data);
+//     for( obj in data)
+//       console.log(obj);
+//   bot.createMessage(data.id,"Welcome to the " +guild.name+". Please reply with your gameroom WR id as mentioned below - \n ```Syntax : \n\t"+ tlcfg.prefix +"verify [your_pilot_id] \nExample : \n\##verify 123456``` \nPlease verify or you wont be able to access the channels.")
+//   })
+  
+// } );
 
 //
 // Translate on flag reaction
@@ -90,7 +113,8 @@ bot.on("messageReactionAdd", async (msg, emoji, userid) => {
 bot.on("messageCreate", async msg => {
   if (msg.author.bot) return
 
-  if (msg.channel.id == "461425409536294933") {
+
+  if (msg.channel.id == process.env.PILOT_ID_CHANNEL_ID) {
     linkIgnToDiscordId();
     return;
   }
@@ -117,6 +141,8 @@ bot.on("messageCreate", async msg => {
 
     return getOpenMatches(tournamentID, "open");
   }
+  if (command.toLowerCase() === "verifyChannel") return addVerificationChannel()
+  if (command.toLowerCase() === "verify") return msg.channel.createMessage("Hi " + msg.author.username +". Your ID under verification. You will be auto assigned role once verified.")
   if (command.toLowerCase() === "help") return help()
   if (command.toLowerCase() === "eval") return evalcmd()
   if (command.toLowerCase() === "shards") return shards()
@@ -129,6 +155,8 @@ bot.on("messageCreate", async msg => {
   if (command.toLowerCase() === "pilots") return getPlayersList()
   if (command.toLowerCase() === "bans") return getBanList()
   if (command.toLowerCase() === "link") return linkIgnToDiscordId(true)
+  if (command.toLowerCase() === "dm") return pmFeedbackToUser()
+  if (command.toLowerCase() === "config") return changeConfig()
   if (command.toLowerCase() === "admin_message_all") {
     return sendToAllGuilds(args.join(" "));
   }
@@ -139,8 +167,107 @@ bot.on("messageCreate", async msg => {
   /*
  
   Command Functions
- 
+
   */
+
+  async function pmFeedbackToUser()
+  {
+    var adminRole = [];
+    msg.channel.guild.roles.forEach(function (value, key) {
+      if (ALLOWED_ROLES.indexOf(value.name) != -1) {
+        adminRole.push(value.id);
+      }
+    });
+    var pilotDiscordID = args.shift().toString().toLowerCase();
+    
+    var sendToPilotId = pilotDiscordID.slice(2,pilotDiscordID.length-1);
+    if (msg.member.roles.some(r => adminRole.includes(r))) {
+      
+      var userid = bot.getDMChannel(sendToPilotId);
+    
+      var messageToPilot = args.join(" ");
+      userid.then(function(data){
+
+        for( obj in data)
+          bot.createMessage(data.id,{
+            embed: {
+              color: 0x80f701,
+              fields: [
+                {
+                  name: "Message from "+msg.channel.guild.name,
+                  value: messageToPilot
+                }
+              ]
+            }
+          })
+
+
+          return bot.createMessage(tlcfg.botLeadersChannel,{
+            embed: {
+              color: 0x80f701,
+              fields: [
+                {
+                  name: "Direct Message sent by - <@" + msg.author.id + ">" ,
+                  value: "To : "+ pilotDiscordID + "\nMessage : " + messageToPilot
+                }
+              ]
+            }
+          })
+
+
+        //bot.createMessage(data.id, " You have a message from server*** " + msg.channel.guild.name + "*** \n ```\n" + messageToPilot + " ``` ")
+      })
+    }
+    else{
+      var userid = bot.getDMChannel(sendToPilotId);
+    
+      var messageToPilot = args.join(" ");
+      userid.then(function(data){
+
+            var adminRoleString = ""
+            for( var i =0; i<adminRole.length;i++ )
+              adminRoleString = "<@"+ adminRole[i] + "> " 
+
+            bot.createMessage(data.id,{
+              embed: {
+                color: 0xf70202,
+                fields: [
+                  {
+                    name: "ERROR",
+                    value: "You dont have enough permissions/required role to use this command. Respective role admins have been notified for the same."
+                  }
+                ]
+              }
+            })
+          
+          return bot.createMessage(tlcfg.botBotificationChannel,{
+            embed: {
+              color: 0xf70202,
+              fields: [
+                {
+                  name: "Unauthorized use of command by - <@" + msg.author.id + ">" ,
+                  value: "Error : Hello "+ adminRoleString + ".\n\t\tMember used a command to send a direct message to - " + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
+                }
+              ]
+            }
+          })
+
+
+
+
+      });
+      //bot.createMessage(tlcfg.botBotificationChannel, reply);
+
+      
+    }
+    
+  }
+
+  async function changeConfig()
+  {
+    console.log(args);
+  }
+
   async function evalcmd() {
     let result
     let input = args.join(" ")
@@ -713,7 +840,7 @@ bot.on("messageCreate", async msg => {
       })
 
 
-      var reply = "***Members ***```\nSr\tPilot Name";
+      var reply = "***Member ***```";
       var flagBreak = 0;
       for (var index = 0; index < pilotDetails.length; index++) {
         if (index == 25) {
@@ -721,12 +848,12 @@ bot.on("messageCreate", async msg => {
           index--;
           break;
         }
-        reply = reply + "\n" + (index + 1)  + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID + "\t" + pilotDetails[index].username;
+        reply = reply + "\n" + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID + "\t" + pilotDetails[index].username;
       }
       reply = reply + "```";
 
-      bot.createMessage("460798231576576020", reply);
-      bot.createMessage("463134158403796992", reply);
+      bot.createMessage(tlcfg.botLeadersChannel, reply);
+      bot.createMessage(tlcfg.botBotificationChannel, reply);
 
       if (flagBreak) {
         reply = "```";
@@ -736,9 +863,8 @@ bot.on("messageCreate", async msg => {
           reply = reply + "\n" + (index + 1) + " \t" + pilotDetails[index].clan.toUpperCase() + "\t" + pilotDetails[index].dId + "\t" + pilotDetails[index].gameroomID + "\t" + pilotDetails[index].username ;
         }
         reply = reply + "```";
-        bot.createMessage("460798231576576020", reply);
-        bot.createMessage("463134158403796992", reply);
-
+        bot.createMessage(tlcfg.botLeadersChannel, reply);
+        bot.createMessage(tlcfg.botBotificationChannel, reply);
       }
 
       msg.channel.createMessage({
