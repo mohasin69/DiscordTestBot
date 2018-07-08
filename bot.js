@@ -224,7 +224,7 @@ bot.on("messageCreate", async msg => {
 
             var adminRoleString = ""
             for( var i =0; i<adminRole.length;i++ )
-              adminRoleString = "<@"+ adminRole[i] + "> " 
+              adminRoleString = adminRoleString + "<@"+ adminRole[i] + "> " 
 
             bot.createMessage(data.id,{
               embed: {
@@ -244,7 +244,7 @@ bot.on("messageCreate", async msg => {
               fields: [
                 {
                   name: "Unauthorized use of command" ,
-                  value: "Error : Hello "+ adminRoleString + ".\n\t\tFrom : \t <@"+msg.author.id+"> \n\t\tMember used a command to send a direct message to - " + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
+                  value: "Notified to"+ adminRoleString + ".\n\t\tFrom : \t<@"+msg.author.id+"> \n\t\tTo : \t" + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
                 }
               ]
             }
