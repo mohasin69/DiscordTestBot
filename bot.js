@@ -8,8 +8,8 @@ const tlcfg = {
   playingStatus: process.env.PLAYING_STATUS,
   tsChannelsEnabled: true,
   roles: { solid: process.env.SOLID_CLAN_ID, ghosts: process.env.GHOSTS_CLAN_ID, vapor: process.env.VAPOR_CLAN_ID },
-  botBotificationChannel : BOT_NOTIFICATION_CHANNEL_ID,
-  botLeadersChannel : LEADERS_CHANNEL_ID
+  botBotificationChannel : process.env.BOT_NOTIFICATION_CHANNEL_ID,
+  botLeadersChannel : process.env.LEADERS_CHANNEL_ID
 };
 
 var gameroomID = [];
