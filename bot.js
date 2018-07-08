@@ -200,6 +200,7 @@ bot.on("messageCreate", async msg => {
             }
           })
 
+          
           return bot.createMessage(tlcfg.botLeadersChannel,{
             embed: {
               color: 0x80f701,
@@ -237,6 +238,18 @@ bot.on("messageCreate", async msg => {
                 ]
               }
             })
+
+            bot.createMessage(tlcfg.botLeadersChannel,{
+              embed: {
+                color: 0xf70202,
+                fields: [
+                  {
+                    name: "ERROR : Unauthorized access " ,
+                    value: "From : <@"+msg.author.id+">\nTo : "+ pilotDiscordID + "\nMessage : " + messageToPilot
+                  }
+                ]
+              }
+            })
           
           return bot.createMessage(tlcfg.botBotificationChannel,{
             embed: {
@@ -244,7 +257,7 @@ bot.on("messageCreate", async msg => {
               fields: [
                 {
                   name: "Unauthorized use of command" ,
-                  value: "Notified to"+ adminRoleString + ".\n\t\tFrom : \t<@"+msg.author.id+"> \n\t\tTo : \t" + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
+                  value: " <@"+adminRole[0]+ ">" +" <@"+adminRole[1]+ ">" + " <@"+adminRole[2]+ ">" +"\n\n\t\tFrom : \t<@"+msg.author.id+"> \n\t\tTo : \t" + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
                 }
               ]
             }
