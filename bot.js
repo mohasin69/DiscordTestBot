@@ -256,8 +256,8 @@ bot.on("messageCreate", async msg => {
               color: 0xf70202,
               fields: [
                 {
-                  name: "Unauthorized use of command" ,
-                  value: " <@"+adminRole[0]+ ">" +" <@"+adminRole[1]+ ">" + " <@"+adminRole[2]+ ">" +"\n\n\t\tFrom : \t<@"+msg.author.id+"> \n\t\tTo : \t" + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
+                  name: "ERROR : Unauthorized access " ,
+                  value: "From : <@"+msg.author.id+">\nTo : "+ pilotDiscordID + "\nMessage : " + messageToPilot
                 }
               ]
             }
