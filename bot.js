@@ -188,7 +188,6 @@ bot.on("messageCreate", async msg => {
       var messageToPilot = args.join(" ");
       userid.then(function(data){
 
-        for( obj in data)
           bot.createMessage(data.id,{
             embed: {
               color: 0x80f701,
@@ -201,14 +200,13 @@ bot.on("messageCreate", async msg => {
             }
           })
 
-
           return bot.createMessage(tlcfg.botLeadersChannel,{
             embed: {
               color: 0x80f701,
               fields: [
                 {
-                  name: "Direct Message sent by - <@" + msg.author.id + ">" ,
-                  value: "To : "+ pilotDiscordID + "\nMessage : " + messageToPilot
+                  name: "Direct Message Notification" ,
+                  value: "From : <@"+msg.author.id+">\nTo : "+ pilotDiscordID + "\nMessage : " + messageToPilot
                 }
               ]
             }
@@ -245,8 +243,8 @@ bot.on("messageCreate", async msg => {
               color: 0xf70202,
               fields: [
                 {
-                  name: "Unauthorized use of command by - <@" + msg.author.id + ">" ,
-                  value: "Error : Hello "+ adminRoleString + ".\n\t\tMember used a command to send a direct message to - " + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
+                  name: "Unauthorized use of command" ,
+                  value: "Error : Hello "+ adminRoleString + ".\n\t\tFrom : \t <@"+msg.author.id+"> \n\t\tMember used a command to send a direct message to - " + pilotDiscordID + "\n\t\tMessage : \t" + messageToPilot
                 }
               ]
             }
